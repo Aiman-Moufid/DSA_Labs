@@ -6,6 +6,7 @@
 //
 
 #include <iostream>
+#include <vector>
 using namespace std;
 class Employee{
 public:
@@ -33,7 +34,7 @@ public:
     Manager(string n, double s):Employee(n, s){};
     
     
-    void calculateBonus() override
+    void calculateBonus() //override
     {
         cout <<"Bonus = " << salary*0.2 << endl;
     }
@@ -44,9 +45,22 @@ class Developer:public Employee
 {
 public:
     Developer(string n, double s):Employee(n, s){};
+    void calculateBonus() //override
+    {
+        cout <<"Bonus = " << salary*0.1 << endl;
+    }
+    
+};
+
+class Intern:public Manager
+{
+public:
+    Intern(string n, double s):Manager(n, s){};
+    
+    
     void calculateBonus() override
     {
-        cout <<"Bonus = " << salary*0.2 << endl;
+        cout <<"Bonus = " << salary*0 << endl;
     }
     
 };
@@ -70,6 +84,16 @@ int main()
     employees2 = new Developer("capped out on beans", 1);
     employees2->calculateBonus();
     
+    Employee* employeelist[3];
+    employeelist[0] = new Manager("Mr.Manager", 99999);
+    employeelist[1] = new Developer("E", 89);
+    employeelist[2] = new Intern("Coffee Bringer", 1000);
+    cout << endl<< endl << "Part 3" << endl << endl;
+    for(int i = 0;i<3;i++)
+    {
+        employeelist[i]->showInfo();
+        employeelist[i]->calculateBonus();
+    }
                
                
 }
