@@ -1,11 +1,16 @@
 #ifndef BSTCHECKER_H
 #define BSTCHECKER_H
-#include <vector>
+#include <set>
+#include <unordered_set>
+#include <climits>
+
 // TODO: Include any needed header files
 #include "BSTNode.h"
 using namespace std;
 
-int globalint = 0;
+unordered_set<int> globalpoint;
+BSTNode* temp;
+
 class BSTChecker {
 public:
    // TODO: Add any desired utility functions
@@ -16,44 +21,66 @@ public:
    // - A node in the left subtree of an ancestor with a lesser or equal key
    // - A node in the right subtree of an ancestor with a greater or equal key
    // - A node that is encountered more than once during traversal
-   bool CompareRootPrevious(BSTNode* rootNode)
+   static bool CompareRoot(BSTNode* rootNode, int min, int max)
     {
        if(rootNode == nullptr)
        {
            return true;
        }
+       
        else
        {
-           if (rootNode->left->key > rootNode->key)
+           //cout << "Now testing in function 1: " << rootNode->key<<endl;
+           if (rootNode->key >= max || rootNode->key <= min)
            {
-               return false;
-           }
-           if (rootNode->right->key < rootNode->key)
-           {
+               temp = rootNode;
                return false;
            }
            
-           return(CompareRootPrevious(rootNode->left) && CompareRootPrevious(rootNode->right));
+           return (CompareRoot(rootNode->left, min, rootNode->key )&&CompareRoot(rootNode->right, rootNode->key, max));
+           
        }
     }
-    bool CheckAncestry(BSTNode* rootNode);
-    bool CheckLoopingPointers(BSTNode* rootNode);
+    
+    
+    static bool CheckLoopingPointers(BSTNode* rootNode)
+    {
+        
+        if (rootNode == nullptr)
+        {
+            return true;
+        }
+        //cout << "Now testing in function 2: " << rootNode->key<<endl;
+        if (globalpoint.find(rootNode->key) != globalpoint.end())
+            {
+                temp = rootNode;
+                return false;
+            }
+            globalpoint.insert(rootNode->key);
+
+        return (CheckLoopingPointers(rootNode->left)&&CheckLoopingPointers(rootNode->right));
+        
+        
+    };
+    static void globalclear()
+    {
+        globalpoint.clear();
+        temp = nullptr;
+    };
     
    static BSTNode* CheckBSTValidity(BSTNode* rootNode) {
       // TODO: Type your code here (remove placeholer line below)
-       if (CompareRootPrevious(rootNode) == false)
+       globalclear();
+       if (CompareRoot(rootNode,INT_MIN,INT_MAX) != true)
        {
-           return nullptr;
+           return temp;
        }
-       
-       if (CheckLoopingPointers(rootNode) == false)
+       globalclear();
+       if (CheckLoopingPointers(rootNode) != true)
        {
-           return nullptr;
+           return temp;
        }
-       if (CheckAncestry(rootNode)== false)
-       {
-           
-       }
+       return nullptr;
    }
    
 };
